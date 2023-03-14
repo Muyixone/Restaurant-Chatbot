@@ -4,35 +4,23 @@ const http = require('http');
 const { sessionMiddleware, wrap } = require('./middlewares');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
+const cuisines = require('./cuisineStore');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// Use the middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 // app.set('view engine', 'ejs');
 
-// let info = {
-//   data: `Your are welcome!, \n Below is a list of our cuisines:`,
-//   menu: ['Rice', 'Beans', 'Coffee', 'Dod'],
-// };
-
+// Session middleware
 app.use(sessionMiddleware);
-
 io.use(wrap(sessionMiddleware, { autoSave: true }));
+
 let orderHistory = [];
-let cuisines = {
-  2: 'item1',
-  3: 'item3',
-  4: 'item4',
-  5: 'item5',
-};
-const state = {
-  userName: '',
-  currentOrder: [],
-};
 
 app.get('/', (req, res) => {
   res.sendFile('index');
@@ -54,7 +42,12 @@ io.on('connection', (socket) => {
       userName = msg;
       socket.emit(
         'welcome',
-        `Welcome ${userName}! place your order \n. Typehere\n99. Typehere\n98. Typehere\n97. Typehere\n0. Cancel order`
+        `Welcome ${userName}! To place an order;
+        Press 1: For a list of our cuisines \n.
+        Press 99: To confirm an order
+        Press 98: To see order history
+        Press 97: To see current order 
+        Press : To Cancel order`
       );
     } else {
       switch (msg) {
@@ -68,6 +61,7 @@ io.on('connection', (socket) => {
         case '3':
         case '4':
         case '5':
+        case '6':
           const itemIndex = parseInt(msg);
           if (cuisines.hasOwnProperty(itemIndex)) {
             const itemSelected = cuisines[itemIndex];

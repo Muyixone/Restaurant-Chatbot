@@ -1,7 +1,8 @@
 const session = require('express-session');
+require('dotenv').config();
 
 const sessionMiddleware = session({
-  secret: 'somerandomshit',
+  secret: process.env.SESSION_SECRET_KEY,
   resave: false,
   saveUninitialized: false,
 });

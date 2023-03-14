@@ -5,18 +5,6 @@ const input = document.getElementById('input');
 const button = document.getElementById('button');
 const messageContainer = document.getElementById('messages');
 
-// Handle sending message to server and input reset
-function sendMessage() {
-  const inputMessage = input.value.trim();
-  if (inputMessage === '') {
-    return;
-  }
-
-  addMessageToPage(inputMessage, 'chat');
-  socket.emit('chat_message', input.value);
-  input.value = '';
-}
-
 // add message to page
 function addMessageToPage(message, sender) {
   const messageList = document.createElement('div');
@@ -27,10 +15,18 @@ function addMessageToPage(message, sender) {
   tempWrapper.appendChild(messageList);
   messageContainer.appendChild(tempWrapper);
   messageContainer.scrollTop = messageContainer.scrollHeight;
+}
 
-  //   const tempWrapper = document.createElement('p');
-  //   tempWrapper.innerHTML = message;
-  //   messageList.appendChild(tempWrapper);
+// Handle sending message to server and input reset
+function sendMessage() {
+  const inputMessage = input.value.trim();
+  if (inputMessage === '') {
+    return;
+  }
+
+  addMessageToPage(inputMessage, 'chatBot');
+  socket.emit('chat_message', input.value);
+  input.value = '';
 }
 
 //watch for message from the server to emit

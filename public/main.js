@@ -26,7 +26,7 @@ function addMessageToPage(message, sender) {
   const tempWrapper = document.createElement('div');
   tempWrapper.appendChild(messageList);
   messageContainer.appendChild(tempWrapper);
-  messageContainer.scrollTop = message.scrollHeight;
+  messageContainer.scrollTop = messageContainer.scrollHeight;
 
   //   const tempWrapper = document.createElement('p');
   //   tempWrapper.innerHTML = message;

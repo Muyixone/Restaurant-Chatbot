@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(sessionMiddleware);
 
 io.use(wrap(sessionMiddleware, { autoSave: true }));
-let orderRecord = [];
+let orderHistory = [];
 let cuisines = {
   2: 'item1',
   3: 'item3',
@@ -86,12 +86,56 @@ io.on('connection', (socket) => {
             socket.session.currentOrder &&
             socket.session.currentOrder.length
           ) {
-            orderRecord.push(socket.session.currentOrder);
+            orderHistory.push(socket.session.currentOrder);
             socket.emit('welcome', `Order placed successfully.`);
             delete socket.session.currentOrder;
           } else {
             socket.emit('welcome', `No order placed. please place an order`);
           }
+          break;
+        case '98':
+          if (!orderHistory.length) {
+            socket.emit('welcome', 'No previous orders');
+          } else {
+            const orderHistoryToStringMethod = orderHistory.map(
+              (item, index) => {
+                return `Order ${index + 1} : ${item.join(', ')}`;
+              }
+            );
+            socket.emit(
+              'welcome',
+              `order history: ${orderHistoryToStringMethod}`
+            );
+          }
+          break;
+        case '97':
+          //console.log(socket.session.currentOrder.length);
+          if (
+            socket.session.currentOrder &&
+            socket.session.currentOrder.length
+          ) {
+            // orderHistory.push(socket.session.currentOrder);
+            socket.emit(
+              'welcome',
+              `Your current order: ${socket.session.currentOrder}`
+            );
+          } else {
+            socket.emit('welcome', 'No current order. Please select an order');
+          }
+          break;
+        case '0':
+          if (
+            socket.session.currentOrder &&
+            socket.session.currentOrder.length
+          ) {
+            socket.emit('welcome', 'Order canceled');
+            delete socket.session.currentOrder;
+          } else {
+            socket.emit('welcome', 'No current order to cancel');
+          }
+          break;
+        default:
+          socket.emit('welcome', 'Wrong selection');
           break;
       }
     }

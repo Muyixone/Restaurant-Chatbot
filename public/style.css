@@ -48,3 +48,10 @@ body {
   #messages > li:nth-child(odd) {
     background: #efefef;
   }
+
+  #menu_list {
+    list-style-type: none;
+    background: grey;
+    margin: .4rem;
+    outline: 2rem;
+  }

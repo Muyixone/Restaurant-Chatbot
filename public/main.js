@@ -22,8 +22,6 @@ function addMessageToPage(message) {
   tempWrapper.appendChild(messageList);
   tempWrapper.appendChild(span);
   messageContainer.appendChild(tempWrapper);
-
-  //   messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
 // Handle sending message to server and input reset
@@ -41,6 +39,7 @@ function sendMessage() {
 //watch for message from the server to emit
 socket.on('welcome', (msg) => {
   addMessageToPage(msg);
+  messageContainer.scrollTop = messageContainer.scrollHeight;
 });
 
 // Add listener to form submission

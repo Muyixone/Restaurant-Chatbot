@@ -5,6 +5,7 @@ const { sessionMiddleware, wrap } = require('./middlewares');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cuisines = require('./cuisineStore');
+const dayjs = require('dayjs');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,13 +28,37 @@ app.get('/', (req, res) => {
   //   res.render('index');
 });
 
-function greetFunc(user) {
-  return [
-    'Good ' +
-      'INSERT TIME OF THE DAY ' +
-      user +
-      ' To place an order, Press 1: For a list of our cuisines.',
+// Function to display order method
+function rand() {
+  let items = [
+    'Press 1: To place an order For a list of our cuisines \n.',
+    'Press 99: To confirm an order',
+    'Press 98: To see order history',
+    'Press 97: To see current order',
   ];
+
+  items.forEach((item) => {
+    return item;
+  });
+  //   for (let i of items) {
+  //     return i;
+  //     //  	const div = document.createElement('div')
+  //     //   div.textContent = i
+  //     //   display.appendChild(div)
+  //   }
+}
+
+// Greet the user with time
+function greetFunc(user, callback) {
+  let currentTime = dayjs();
+  let currentHour = currentTime.hour();
+  if (currentHour < 12) {
+    return [['Good Morning ' + user], callback()];
+  } else if (currentHour > 12 && currentHour < 18) {
+    return [['Good Afternoon ' + user], callback()];
+  } else {
+    return [['Good Evening ' + user], callback()];
+  }
 }
 
 io.on('connection', (socket) => {
@@ -50,7 +75,7 @@ io.on('connection', (socket) => {
       userName = msg;
       socket.emit(
         'welcome',
-        greetFunc(userName)
+        greetFunc(userName.toUpperCase(), rand)
         // `Welcome ${userName}! To place an order;
         // Press 1: For a list of our cuisines \n.
         // Press 99: To confirm an order

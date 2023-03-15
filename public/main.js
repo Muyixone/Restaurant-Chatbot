@@ -2,19 +2,28 @@ var socket = io();
 
 const form = document.getElementById('form');
 const input = document.getElementById('input');
-const button = document.getElementById('button');
+const button = document.getElementById('send-button');
 const messageContainer = document.getElementById('messages');
 
 // add message to page
-function addMessageToPage(message, sender) {
+function addMessageToPage(message) {
   const messageList = document.createElement('div');
-  messageList.classList.add('msgList', sender);
+  messageList.classList.add('message');
   messageList.textContent = message;
+  // messageContainer.appendChild(messageList);
+
+  const messageTime = new Date().toLocaleTimeString();
+  const span = document.createElement('span');
+  span.classList.add('message_time');
+  span.textContent = messageTime;
+  console.log(span);
 
   const tempWrapper = document.createElement('div');
   tempWrapper.appendChild(messageList);
+  tempWrapper.appendChild(span);
   messageContainer.appendChild(tempWrapper);
-  messageContainer.scrollTop = messageContainer.scrollHeight;
+
+  //   messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
 // Handle sending message to server and input reset
@@ -24,14 +33,14 @@ function sendMessage() {
     return;
   }
 
-  addMessageToPage(inputMessage, 'chatBot');
+  addMessageToPage(inputMessage);
   socket.emit('chat_message', input.value);
   input.value = '';
 }
 
 //watch for message from the server to emit
 socket.on('welcome', (msg) => {
-  addMessageToPage(msg, 'chatBot');
+  addMessageToPage(msg);
 });
 
 // Add listener to form submission

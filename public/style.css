@@ -42,16 +42,17 @@ body {
     margin: 0;
     padding: 0;
   }
-  #messages > li {
+  #messages > div {
     padding: 0.5rem 1rem;
   }
-  #messages > li:nth-child(odd) {
+  #messages > div:nth-child(odd) {
     background: #efefef;
+    
   }
 
-  #menu_list {
+  /* .msgList {
     list-style-type: none;
     background: grey;
     margin: .4rem;
     outline: 2rem;
-  }
+  } */

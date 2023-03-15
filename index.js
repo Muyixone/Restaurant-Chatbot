@@ -27,6 +27,15 @@ app.get('/', (req, res) => {
   //   res.render('index');
 });
 
+function greetFunc(user) {
+  return [
+    'Good ' +
+      'INSERT TIME OF THE DAY ' +
+      user +
+      ' To place an order, Press 1: For a list of our cuisines.',
+  ];
+}
+
 io.on('connection', (socket) => {
   console.log('A user has connected');
 
@@ -36,18 +45,18 @@ io.on('connection', (socket) => {
   socket.emit('welcome', 'You are welcome, Please enter your name');
 
   socket.on('chat_message', (msg) => {
-    // console.log('message from user:', msg);
     // const userSession = socket.handshake.session;
     if (!userName) {
       userName = msg;
       socket.emit(
         'welcome',
-        `Welcome ${userName}! To place an order;
-        Press 1: For a list of our cuisines \n.
-        Press 99: To confirm an order
-        Press 98: To see order history
-        Press 97: To see current order 
-        Press : To Cancel order`
+        greetFunc(userName)
+        // `Welcome ${userName}! To place an order;
+        // Press 1: For a list of our cuisines \n.
+        // Press 99: To confirm an order
+        // Press 98: To see order history
+        // Press 97: To see current order
+        // Press : To Cancel order`
       );
     } else {
       switch (msg) {
@@ -103,7 +112,7 @@ io.on('connection', (socket) => {
           }
           break;
         case '97':
-          //console.log(socket.session.currentOrder.length);
+          console.log(socket.session);
           if (
             socket.session.currentOrder &&
             socket.session.currentOrder.length

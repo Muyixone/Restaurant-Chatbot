@@ -41,15 +41,19 @@ body {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    white-space: pre-wrap;
   }
   #messages > div {
     padding: 0.5rem 1rem;
   }
   #messages > div:nth-child(odd) {
-    background: #efefef;
-    
+    background: #efefef; 
   }
 
+  .message_time {
+    font-size: .8rem;
+    
+  }
   /* .msgList {
     list-style-type: none;
     background: grey;

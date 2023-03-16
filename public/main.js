@@ -9,7 +9,7 @@ const messageContainer = document.getElementById('messages');
 function addMessageToPage(message) {
   const messageList = document.createElement('div');
   messageList.classList.add('message');
-  messageList.textContent = message;
+  messageList.innerHTML = message; //'<pre>' + message + '</pre>';
   // messageContainer.appendChild(messageList);
 
   const messageTime = new Date().toLocaleTimeString();
@@ -39,7 +39,9 @@ function sendMessage() {
 //watch for message from the server to emit
 socket.on('welcome', (msg) => {
   addMessageToPage(msg);
-  messageContainer.scrollTop = messageContainer.scrollHeight;
+
+  // Scroll to the bottom of the chat automatically
+  window.scrollTo(0, document.body.scrollHeight);
 });
 
 // Add listener to form submission

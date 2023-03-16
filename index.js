@@ -31,33 +31,26 @@ app.get('/', (req, res) => {
 // Function to display order method
 function rand() {
   let items = [
-    'Press 1: To place an order For a list of our cuisines \n.',
-    'Press 99: To confirm an order',
-    'Press 98: To see order history',
-    'Press 97: To see current order',
+    'Press 1: To place an order For a list of our cuisines.',
+    'Press 99: To confirm an order.',
+    'Press 98: To see order history.',
+    'Press 97: To see current order.',
   ];
 
-  items.forEach((item) => {
-    return item;
-  });
-  //   for (let i of items) {
-  //     return i;
-  //     //  	const div = document.createElement('div')
-  //     //   div.textContent = i
-  //     //   display.appendChild(div)
-  //   }
+  return items.join('\n');
 }
 
 // Greet the user with time
 function greetFunc(user, callback) {
   let currentTime = dayjs();
   let currentHour = currentTime.hour();
+
   if (currentHour < 12) {
-    return [['Good Morning ' + user], callback()];
+    return [`Good Morning ${user}\n ${callback()}`];
   } else if (currentHour > 12 && currentHour < 18) {
-    return [['Good Afternoon ' + user], callback()];
+    return [`Good Afternoon ${user}\n ${callback()}`];
   } else {
-    return [['Good Evening ' + user], callback()];
+    return [`Good Evening ${user}\n ${callback()}`];
   }
 }
 
@@ -87,8 +80,9 @@ io.on('connection', (socket) => {
       switch (msg) {
         case '1':
           const cuisineList = Object.entries(cuisines)
-            .map(([key, item]) => `${key}. ${item}`)
+            .map(([key, item]) => `${key}: ${item}`)
             .join('\n');
+
           socket.emit('welcome', `List of items to order:\n ${cuisineList}`);
           break;
         case '2':
@@ -167,8 +161,6 @@ io.on('connection', (socket) => {
           break;
       }
     }
-
-    // io.emit('welcome', msg);
   });
 
   socket.on('disconnect', () => {

@@ -1,8 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+:root {
+	--dark-color-a: #667aff;
+	--dark-color-b: #7386ff;
+	--light-color: #e6e9ff;
+  --main-bg-color: #5E6342;
+  --bot-msg-color: #A0522D;
+  --user-msg-color: #5F6641;
+}
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
 body {
-    margin: 0;
-    padding-bottom: 3rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Helvetica, Arial, sans-serif;
+   
+    font-family: 'Roboto', sans-serif;
+	  font-size: 16px;
+	  background: var(--main-bg-color);
+	  margin: 20px;  
+  }
+
+ 
+  #chat-container {
+    max-width: 1100px;
+    background: #fff;
+    margin: 30px auto;
+    overflow: hidden;
+  }
+
+  #chat-header {
+    background: var(--dark-color-a);
+    color: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    
   }
 
   #form {
@@ -34,32 +68,42 @@ body {
     margin: 0.25rem;
     border-radius: 3px;
     outline: none;
-    color: #fff;
+    
   }
 
   #messages {
-    list-style-type: none;
     margin: 0;
     padding: 0;
+    padding: 30px;
     white-space: pre-wrap;
+    color: var(--light-color);
+    overflow-y: scroll;
   }
+
   #messages > div {
+    margin: 1.2rem;
     padding: 0.5rem 1rem;
+    background-color: var(--user-msg-color);
+    border-radius: .78rem;
+    text-align: right;  
   }
   #messages > div:nth-child(odd) {
-    background: #efefef; 
+    background: var(--bot-msg-color);
+    width: 50%; 
+    text-align: left;  
   }
-
   .message_time {
     font-size: .8rem;
-
   }
-  /* .msgList {
-    list-style-type: none;
-    background: grey;
-    margin: .4rem;
-    outline: 2rem;
-  } */
+
+  #send-button {
+    cursor: pointer;
+    padding: 5px 15px;
+    background: var(--light-color);
+    color: var(--dark-color-a);
+    border: 0;
+    font-size: 17px;
+  }
   /*
   #8F9779
 #5F6641

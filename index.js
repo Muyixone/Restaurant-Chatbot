@@ -5,8 +5,8 @@ const { sessionMiddleware, wrap } = require('./middlewares');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cuisines = require('./cuisineStore');
-const dayjs = require('dayjs');
-const session = require('express-session');
+
+const { botGuide, greetFunc } = require('./utils/utilFunctions');
 
 const app = express();
 const server = http.createServer(app);
@@ -16,56 +16,30 @@ const io = new Server(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-// app.set('view engine', 'ejs');
 
 // Session middleware
 app.use(sessionMiddleware);
 io.use(wrap(sessionMiddleware));
 
 let orderHistory = [];
+let botIntro = `Welcome to CuisineGenie, Please enter your name`;
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.sendFile('index');
-  //   res.render('index');
 });
 
-// Function to display order method
-function rand() {
-  let items = [
-    'Press 1: To place an order For a list of our cuisines.',
-    'Press 99: To confirm an order.',
-    'Press 98: To see order history.',
-    'Press 97: To see current order.',
-  ];
-  return items.join('\n');
-}
-
-// Greet the user with time
-function greetFunc(user, callback) {
-  let currentTime = dayjs();
-  let currentHour = currentTime.hour();
-
-  if (currentHour < 12) {
-    return [`Good Morning ${user}\n ${callback()}`];
-  } else if (currentHour > 12 && currentHour < 18) {
-    return [`Good Afternoon ${user}\n ${callback()}`];
-  } else {
-    return [`Good Evening ${user}\n ${callback()}`];
-  }
-}
+//socket events
 
 io.on('connection', (socket) => {
-  console.log('A user has connected');
-
   let userName = '';
   socket.session = socket.request.session;
 
-  socket.emit('welcome', 'You are welcome, Please enter your name');
+  socket.emit('welcome', botIntro);
 
   socket.on('chat_message', (msg) => {
     if (!userName) {
       userName = msg;
-      socket.emit('welcome', greetFunc(userName.toUpperCase(), rand));
+      socket.emit('welcome', greetFunc(userName.toUpperCase(), botGuide));
     } else {
       switch (msg) {
         case '1':
@@ -84,12 +58,10 @@ io.on('connection', (socket) => {
           if (cuisines.hasOwnProperty(itemIndex)) {
             const itemSelected = cuisines[itemIndex];
             socket.session.currentOrder = socket.session.currentOrder || [];
-            console.log(socket.session.currentOrder);
             socket.session.currentOrder.push(itemSelected);
-
             socket.emit(
               'welcome',
-              `Order ${itemSelected} has been added to your order`
+              `You have placed an order for ${itemSelected}\n ${botGuide()}`
             );
           } else {
             socket.emit('welcome', `Wrong order selected.`);
@@ -102,6 +74,7 @@ io.on('connection', (socket) => {
           ) {
             orderHistory.push(socket.session.currentOrder);
             socket.emit('welcome', `Order placed successfully.`);
+            // Once order is successfully placed, remove the current order
             delete socket.session.currentOrder;
           } else {
             socket.emit('welcome', `No order placed. please place an order`);
@@ -111,28 +84,49 @@ io.on('connection', (socket) => {
           if (!orderHistory.length) {
             socket.emit('welcome', 'No previous orders');
           } else {
+            console.log(orderHistory);
             const orderHistoryToStringMethod = orderHistory.map(
               (item, index) => {
-                return `Order ${index + 1} : ${item.join(', ')}`;
+                // check if items order is more than one, for a customised message
+                if (item.length > 1) {
+                  return `Below are your orders: ${index + 1} : ${item.join(
+                    ', '
+                  )}\n`;
+                } else {
+                  return `Below is your order: ${index + 1} : ${item.join(
+                    ' '
+                  )}\n`;
+                }
               }
             );
             socket.emit(
               'welcome',
-              `order history: ${orderHistoryToStringMethod}`
+              `order history:\n ${orderHistoryToStringMethod}`
             );
           }
           break;
         case '97':
-          console.log(socket.session);
           if (
             socket.session.currentOrder &&
             socket.session.currentOrder.length
           ) {
-            // orderHistory.push(socket.session.currentOrder);
-            socket.emit(
-              'welcome',
-              `Your current order: ${socket.session.currentOrder}`
-            );
+            // check if current order is more than one, for a customised message
+            console.log(socket.session.currentOrder);
+            if (socket.session.currentOrder.length > 1) {
+              socket.emit(
+                'welcome',
+                `Your current orders are:\n ${socket.session.currentOrder.join(
+                  ', '
+                )}\n`
+              );
+            } else {
+              socket.emit(
+                'welcome',
+                `Your current order:\n ${socket.session.currentOrder.join(
+                  ', '
+                )}\n`
+              );
+            }
           } else {
             socket.emit('welcome', 'No current order. Please select an order');
           }

@@ -4,6 +4,7 @@ const form = document.getElementById('form');
 const input = document.getElementById('input');
 const button = document.getElementById('send-button');
 const messageContainer = document.getElementById('messages');
+const chatContainer = document.getElementById('chat-container');
 
 // add message to page
 function addMessageToPage(message) {

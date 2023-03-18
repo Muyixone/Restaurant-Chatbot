@@ -1,9 +1,10 @@
 let cuisines = {
-  2: 'Refuel Dodo Max Meal',
-  3: 'Rice and Stew',
-  4: 'Pounded yam and Eguisi soup',
-  5: 'Nigeria Jollof rice',
-  6: 'Ghana Jollof',
+  2: 'Rice and Stew',
+  3: 'Pounded yam and Eguisi soup',
+  4: 'Nigeria Jollof rice',
+  5: 'Ghana Jollof',
+  5: 'Pizza',
+  6: 'Refuel Dodo Max Meal',
 };
 
 module.exports = cuisines;

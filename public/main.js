@@ -16,7 +16,6 @@ function addMessageToPage(message) {
   const span = document.createElement('span');
   span.classList.add('message_time');
   span.textContent = messageTime;
-  console.log(span);
 
   const tempWrapper = document.createElement('div');
   tempWrapper.appendChild(messageList);
@@ -53,29 +52,9 @@ form.addEventListener('submit', (event) => {
 // Add listener to button on click event
 button.addEventListener('click', sendMessage);
 
-input.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-// REVIEW CODE BELOW HERE ///
-// socket.on('welcome', ({ data, menu }) => {
-//   const tempWrapper = document.createElement('p');
-//   tempWrapper.innerHTML = data;
-//   message.appendChild(tempWrapper.firstChild);
-
-//   menu.forEach((item) => {
-//     let wrapper = document.createElement('li');
-//     wrapper.textContent = item;
-
-//     menuList.appendChild(wrapper);
-//   });
-// });
-
-// socket.on('chat message', (msg) => {
-//   var item = document.createElement('li');
-//   item.textContent = msg;
-//   message.appendChild(item);
+// input.addEventListener('keydown', (event) => {
+//   if (event.key === 'Enter') {
+//     event.preventDefault();
+//     sendMessage();
+//   }
 // });

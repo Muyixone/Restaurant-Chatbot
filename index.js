@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cuisines = require('./cuisineStore');
 const dayjs = require('dayjs');
+const session = require('express-session');
 
 const app = express();
 const server = http.createServer(app);
@@ -19,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session middleware
 app.use(sessionMiddleware);
-io.use(wrap(sessionMiddleware, { autoSave: true }));
+io.use(wrap(sessionMiddleware));
 
 let orderHistory = [];
 
@@ -36,7 +37,6 @@ function rand() {
     'Press 98: To see order history.',
     'Press 97: To see current order.',
   ];
-
   return items.join('\n');
 }
 
@@ -63,19 +63,9 @@ io.on('connection', (socket) => {
   socket.emit('welcome', 'You are welcome, Please enter your name');
 
   socket.on('chat_message', (msg) => {
-    // const userSession = socket.handshake.session;
     if (!userName) {
       userName = msg;
-      socket.emit(
-        'welcome',
-        greetFunc(userName.toUpperCase(), rand)
-        // `Welcome ${userName}! To place an order;
-        // Press 1: For a list of our cuisines \n.
-        // Press 99: To confirm an order
-        // Press 98: To see order history
-        // Press 97: To see current order
-        // Press : To Cancel order`
-      );
+      socket.emit('welcome', greetFunc(userName.toUpperCase(), rand));
     } else {
       switch (msg) {
         case '1':
@@ -94,7 +84,9 @@ io.on('connection', (socket) => {
           if (cuisines.hasOwnProperty(itemIndex)) {
             const itemSelected = cuisines[itemIndex];
             socket.session.currentOrder = socket.session.currentOrder || [];
+            console.log(socket.session.currentOrder);
             socket.session.currentOrder.push(itemSelected);
+
             socket.emit(
               'welcome',
               `Order ${itemSelected} has been added to your order`

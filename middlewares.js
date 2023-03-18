@@ -1,10 +1,12 @@
 const session = require('express-session');
+const fileStore = require('session-file-store')(session);
 require('dotenv').config();
 
 const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET_KEY,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  store: new fileStore({}),
 });
 
 //convert a connected middleware to socket.io middleware

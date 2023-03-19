@@ -1,5 +1,6 @@
 const { server } = require('./index');
+require('dotenv').config();
 
-server.listen(4800, () => {
+server.listen(process.env.PORT, () => {
   console.log('Server listening');
 });

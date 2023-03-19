@@ -84,7 +84,6 @@ io.on('connection', (socket) => {
           if (!orderHistory.length) {
             socket.emit('welcome', 'No previous orders');
           } else {
-            console.log(orderHistory);
             const orderHistoryToStringMethod = orderHistory.map(
               (item, index) => {
                 // check if items order is more than one, for a customised message
